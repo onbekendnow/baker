@@ -27,7 +27,7 @@ private[downing] class SplitBrainResolverActor(stableAfterPeriod: FiniteDuration
   private val schedulerTickFrequency: FiniteDuration = stableAfterPeriod / 2
 
   import context.dispatcher
-  val actOnSbrDecisionTask: Cancellable = context.system.scheduler.schedule(0 seconds, schedulerTickFrequency, self, ActOnSbrDecision)
+  val actOnSbrDecisionTask: Cancellable = context.system.scheduler.scheduleWithFixedDelay(0 seconds, schedulerTickFrequency, self, ActOnSbrDecision)
 
   override def preStart(): Unit = {
     cluster.subscribe(self, ClusterEvent.InitialStateAsEvents, classOf[ClusterDomainEvent])

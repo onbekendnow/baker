@@ -395,7 +395,7 @@ object BaaSIntegrationSpec {
       Future { (ActorSystem(systemName, config), config) }
     }
 
-  private def runStateNodeHttpServer(stateNodeBaker: ScalaBaker, stateNodeSystem: ActorSystem, materializer: Materializer)(implicit ec: ExecutionContext): WithOpenPort[(Int, Http.ServerBinding)] =
+  private def runStateNodeHttpServer(stateNodeBaker: ScalaBaker, stateNodeSystem: ActorSystem)(implicit ec: ExecutionContext): WithOpenPort[(Int, Http.ServerBinding)] =
     withOpenPort(port => BaaSServer.run(stateNodeBaker, "localhost", port)(stateNodeSystem, materializer).map(port -> _))
 
   private def withOpenPort[T](f: Int => Future[T])(implicit ec: ExecutionContext): WithOpenPort[T] = {

@@ -19,7 +19,7 @@ object RemoteEventListener extends common.RemoteEventListener[Future] with Scala
 
   override type RecipeEventMetadataType = RecipeEventMetadata
 
-  private[baas] def runWith(listenerFunction: (RecipeEventMetadata, EventInstance) => Unit, port: Int, timeout: FiniteDuration)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption): Future[Http.ServerBinding] = {
+  private[baas] def runWith(listenerFunction: (RecipeEventMetadata, EventInstance) => Unit, port: Int, timeout: FiniteDuration)(implicit system: ActorSystem, encryption: Encryption): Future[Http.ServerBinding] = {
     // Temp
     println(Console.YELLOW + s"Starting remote interaction [${listenerFunction.toString}]" + Console.RESET)
     // Temp
@@ -38,7 +38,6 @@ object RemoteEventListener extends common.RemoteEventListener[Future] with Scala
     val config = ConfigFactory.load()
     val port = config.getInt("baas-component.http-api-port")
     implicit val system: ActorSystem = ActorSystem("RemoteEventListenerSystem")
-    implicit val materializer: Materializer = ActorMaterializer()(system)
     implicit val encryption: Encryption = Encryption.from(config)
     Await.result(runWith(listenerFunction, port, timeout), timeout)
   }

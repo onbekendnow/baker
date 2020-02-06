@@ -11,7 +11,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 // TODO make this more efficient and thread safe (making it an actor is fine)
-class EventListenersServiceDiscovery(discovery: ServiceDiscovery, baker: Baker)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption) extends LazyLogging {
+class EventListenersServiceDiscovery(discovery: ServiceDiscovery, baker: Baker)(implicit system: ActorSystem, encryption: Encryption) extends LazyLogging {
 
   import system.dispatcher
 

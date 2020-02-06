@@ -27,7 +27,7 @@ object MarshallingUtils {
 
   case class UnmarshalWithBakerExceptions[A](response: HttpResponse) {
 
-    def withBakerExceptions[P <: ProtoMessage[P]](implicit ec: ExecutionContext, mat: Materializer, m1: ProtoMap[A, P]): Future[A] = {
+    def withBakerExceptions[P <: ProtoMessage[P]](implicit ec: ExecutionContext, m1: ProtoMap[A, P]): Future[A] = {
       for {
         decoded <- Unmarshal(response).to[Either[BaaSProtocol.BaaSRemoteFailure, A]]
         response <- decoded match {
@@ -41,7 +41,7 @@ object MarshallingUtils {
   def unmarshal[A](response: HttpResponse): UnmarshalWithBakerExceptions[A] =
     UnmarshalWithBakerExceptions[A](response)
 
-  def unmarshalBakerExceptions(response: HttpResponse)(implicit ec: ExecutionContext, mat: Materializer): Future[Unit] =
+  def unmarshalBakerExceptions(response: HttpResponse)(implicit ec: ExecutionContext): Future[Unit] =
     response.entity.httpEntity.contentType match {
       case ContentTypes.`application/octet-stream` =>
         Unmarshal(response)

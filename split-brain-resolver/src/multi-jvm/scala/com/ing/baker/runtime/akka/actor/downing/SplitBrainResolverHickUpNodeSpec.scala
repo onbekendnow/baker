@@ -45,8 +45,8 @@ abstract class SplitBrainResolverHickUpNodeSpec(splitBrainResolverConfig: SplitB
       enterBarrier("cluster-is-up")
 
       runOn(nodeA) {
-        scheduleReachable = Some(system.scheduler.schedule(0.seconds, 2 second, () => statusNodeE(reachable = true)))
-        scheduleUnreachable = Some(system.scheduler.schedule(1.seconds, 2 second, () => statusNodeE(reachable = false)))
+        scheduleReachable = Some(system.scheduler.scheduleWithFixedDelay(0.seconds, 2 second, () => statusNodeE(reachable = true)))
+        scheduleUnreachable = Some(system.scheduler.scheduleWithFixedDelay(1.seconds, 2 second, () => statusNodeE(reachable = false)))
       }
 
       Thread.sleep(10 * 1000)

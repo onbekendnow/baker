@@ -27,8 +27,6 @@ class ProcessInstanceEventSourcingSpec extends AkkaTestBase("ProcessQuerySpec") 
   private implicit val akkaTimout: Timeout = Timeout(2 seconds)
   private val timeOut: Duration = akkaTimout.duration
 
-  private implicit val materializer: ActorMaterializer = ActorMaterializer()
-
   private implicit val ec: ExecutionContext = system.dispatcher
 
   override protected def beforeEach(): Unit = {

@@ -17,11 +17,11 @@ import scala.concurrent.Future
 
 object RemoteInteractionClient {
 
-  def apply(hostname: String)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption) =
+  def apply(hostname: String)(implicit system: ActorSystem, encryption: Encryption) =
     new RemoteInteractionClient(Uri(hostname))
 }
 
-class RemoteInteractionClient(hostname: Uri)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption) {
+class RemoteInteractionClient(hostname: Uri)(implicit system: ActorSystem, encryption: Encryption) {
 
   import system.dispatcher
 

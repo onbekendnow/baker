@@ -62,7 +62,6 @@ object RemoteInteractionSpec {
     val testId: UUID = UUID.randomUUID()
     val systemName: String = "baas-node-interaction-test-" + testId
     implicit val system: ActorSystem = ActorSystem(systemName)
-    implicit val materializer: Materializer = ActorMaterializer()
     implicit val encryption: Encryption = Encryption.NoEncryption
     for {
       (binding, port) <- withOpenPort(5000, port => RemoteInteraction.runWith(implementation, port, 20.seconds))

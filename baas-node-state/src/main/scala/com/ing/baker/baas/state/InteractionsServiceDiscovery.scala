@@ -16,7 +16,7 @@ import scala.compat.java8.FunctionConverters._
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class InteractionsServiceDiscovery(discovery: ServiceDiscovery)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption)
+class InteractionsServiceDiscovery(discovery: ServiceDiscovery)(implicit system: ActorSystem, encryption: Encryption)
   extends InteractionManager with LazyLogging {
 
   private var interactionImplementations: Seq[InteractionInstance] = Seq.empty

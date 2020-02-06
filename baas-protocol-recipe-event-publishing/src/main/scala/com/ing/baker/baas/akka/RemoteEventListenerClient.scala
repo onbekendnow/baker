@@ -16,11 +16,11 @@ import scala.concurrent.Future
 
 object RemoteEventListenerClient {
 
-  def apply(hostname: String)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption) =
+  def apply(hostname: String)(implicit system: ActorSystem, encryption: Encryption) =
     new RemoteEventListenerClient(Uri(hostname))
 }
 
-class RemoteEventListenerClient(hostname: Uri)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption) {
+class RemoteEventListenerClient(hostname: Uri)(implicit system: ActorSystem, encryption: Encryption) {
 
   import system.dispatcher
 

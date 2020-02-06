@@ -17,14 +17,14 @@ import scala.concurrent.Future
 
 object RemoteEventListenerHttp {
 
-  def run(listenerFunction: (RecipeEventMetadata, EventInstance) => Unit)(host: String, port: Int)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption): Future[Http.ServerBinding] = {
+  def run(listenerFunction: (RecipeEventMetadata, EventInstance) => Unit)(host: String, port: Int)(implicit system: ActorSystem, encryption: Encryption): Future[Http.ServerBinding] = {
     import system.dispatcher
     val server = new RemoteEventListenerHttp(listenerFunction)(system, mat, encryption)
     Http().bindAndHandle(server.route, host, port)
   }
 }
 
-class RemoteEventListenerHttp(listenerFunction: (RecipeEventMetadata, EventInstance) => Unit)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption) {
+class RemoteEventListenerHttp(listenerFunction: (RecipeEventMetadata, EventInstance) => Unit)(implicit system: ActorSystem, encryption: Encryption) {
 
   import system.dispatcher
 

@@ -17,7 +17,7 @@ object RemoteInteraction extends common.RemoteInteraction[Future] with ScalaApi 
 
   override type InteractionInstanceType = InteractionInstance
 
-  private[baas] def runWith(implementation: InteractionInstance, port: Int, timeout: FiniteDuration)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption): Future[Http.ServerBinding] = {
+  private[baas] def runWith(implementation: InteractionInstance, port: Int, timeout: FiniteDuration)(implicit system: ActorSystem, encryption: Encryption): Future[Http.ServerBinding] = {
     // Temp
     println(Console.YELLOW + s"Starting remote interaction [${implementation.name}]" + Console.RESET)
     // Temp
@@ -36,7 +36,6 @@ object RemoteInteraction extends common.RemoteInteraction[Future] with ScalaApi 
     val config = ConfigFactory.load()
     val port = config.getInt("baas-component.http-api-port")
     implicit val system: ActorSystem = ActorSystem("RemoteInteractionSystem")
-    implicit val materializer: Materializer = ActorMaterializer()(system)
     implicit val encryption: Encryption = Encryption.from(config)
     Await.result(runWith(implementation, port, timeout), timeout)
   }

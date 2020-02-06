@@ -8,6 +8,6 @@ import com.ing.baker.runtime.serialization.Encryption
 
 object BakerClient {
 
-  def build(hostname: String, actorSystem: ActorSystem, mat: Materializer, encryption: Encryption = Encryption.NoEncryption): JavaBaker =
-    new JavaBaker(ScalaRemoteBaker.build(hostname)(actorSystem, mat, encryption))
+  def build(hostname: String, actorSystem: ActorSystem, encryption: Encryption = Encryption.NoEncryption): JavaBaker =
+    new JavaBaker(ScalaRemoteBaker.build(hostname)(actorSystem, encryption))
 }

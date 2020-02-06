@@ -17,14 +17,14 @@ import scala.concurrent.Future
 
 object RemoteInteractionHttp {
 
-  def run(interaction: InteractionInstance)(host: String, port: Int)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption): Future[Http.ServerBinding] = {
+  def run(interaction: InteractionInstance)(host: String, port: Int)(implicit system: ActorSystem, encryption: Encryption): Future[Http.ServerBinding] = {
     import system.dispatcher
-    val server = new RemoteInteractionHttp(interaction)(system, mat, encryption)
+    val server = new RemoteInteractionHttp(interaction)(system, encryption)
     Http().bindAndHandle(server.route, host, port)
   }
 }
 
-class RemoteInteractionHttp(interaction: InteractionInstance)(implicit system: ActorSystem, mat: Materializer, encryption: Encryption) {
+class RemoteInteractionHttp(interaction: InteractionInstance)(implicit system: ActorSystem, encryption: Encryption) {
 
   import system.dispatcher
 

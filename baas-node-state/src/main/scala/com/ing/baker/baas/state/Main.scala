@@ -19,7 +19,6 @@ object Main extends App {
 
   // Core dependencies
   implicit val system: ActorSystem = ActorSystem("BaaSStateNodeSystem")
-  implicit val materializer: Materializer = ActorMaterializer()
   implicit val encryption: Encryption = Encryption.from(config)
 
   // Dependencies
