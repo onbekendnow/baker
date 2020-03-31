@@ -19,9 +19,7 @@ object KubernetesCommands {
   def basicSetup(implicit cs: ContextShift[IO], timer: Timer[IO]): Resource[IO, Namespace] =
     for {
       namespace <- Namespace.resource
-      _ <- Resource.liftF(printGreen(s"\nCreating Bakery cluster environment."))
-      _ <- DefinitionFile.resource("crd-baker.yaml")
-      _ <- DefinitionFile.resource("crd-interaction.yaml")
+      _ <- Resource.liftF(printGreen(s"\nCreating Bakery cluster environment (assuming you have applied Bakery CRDs already)"))
       _ <- DefinitionFile.resource("bakery-controller.yaml", namespace)
       _ <- DefinitionFile.resource("example-config.yaml", namespace)
       _ <- DefinitionFile.resource("kafka-event-sink.yaml", namespace)
