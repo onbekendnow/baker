@@ -13,9 +13,9 @@ lazy val buildExampleDockerCommand: Command = Command.command("buildExampleDocke
       "baas-kafka-listener-example/docker:publishLocal" ::
       "bakery-controller/docker:publishLocal" ::
       "project baas-interaction-example-make-payment-and-ship-items" ::
-      "buildInteractionDockerImage --image-name=make-payment-and-ship-items --publish=local --interaction=webshop.webservice.MakePaymentInstance --interaction=webshop.webservice.ShipItemsInstance" ::
+      "buildInteractionDockerImage --image-name=interaction-make-payment-and-ship-items --publish=local --interaction=webshop.webservice.MakePaymentInstance --interaction=webshop.webservice.ShipItemsInstance" ::
       "project baas-interaction-example-reserve-items" ::
-      "buildInteractionDockerImage --image-name=interaction-webshop.webservice.reserveitemsinstance --publish=local --interaction=webshop.webservice.ReserveItemsInstance" ::
+      "buildInteractionDockerImage --image-name=baas-interaction-example-reserve-items --publish=local --interaction=webshop.webservice.ReserveItemsInstance" ::
       "project baas-smoke-tests" ::
       state
 })
@@ -82,7 +82,7 @@ lazy val bakertypes = project.in(file("bakertypes"))
       typeSafeConfig,
       scalaReflect(scalaVersion.value),
       scalaLogging
-    ) ++ testDeps(scalaTest, scalaCheck, scalaCheck)
+    ) ++ testDeps(scalaTest, scalaCheck, scalaCheckPlus)
   )
 
 lazy val intermediateLanguage = project.in(file("intermediate-language"))
@@ -95,7 +95,7 @@ lazy val intermediateLanguage = project.in(file("intermediate-language"))
       scalaGraphDot,
       typeSafeConfig,
       scalaLogging
-    ) ++ testDeps(scalaTest, scalaCheck)
+    ) ++ testDeps(scalaTest, scalaCheck, scalaCheckPlus)
   ).dependsOn(bakertypes)
 
 lazy val `baker-interface` = project.in(file("baker-interface"))
@@ -156,6 +156,8 @@ lazy val runtime = project.in(file("runtime"))
         junitInterface,
         scalaTest,
         scalaCheck,
+        scalaCheckPlus,
+        scalaCheckPlusMockito,
         mockito)
         ++ providedDeps(findbugs)
   )
@@ -205,6 +207,7 @@ lazy val recipeDsl = project.in(file("recipe-dsl"))
         testDeps(
           scalaTest,
           scalaCheck,
+          scalaCheckPlus,
           junitInterface,
           slf4jApi
         )
@@ -426,28 +429,6 @@ lazy val `baas-client-example` = project
   )
   .dependsOn(bakertypes, `baas-node-client`, recipeCompiler, recipeDsl)
 
-lazy val `baas-interaction-example-reserve-items` = project.in(file("examples/baas-interaction-examples/reserve-items"))
-  .enablePlugins(JavaAppPackaging)
-  .enablePlugins(baas.sbt.BuildInteractionDockerImageSBTPlugin)
-  .settings(commonSettings)
-  .settings(noPublishSettings)
-  .settings(
-    moduleName := "baas-interaction-example-reserve-items",
-    scalacOptions ++= Seq(
-      "-Ypartial-unification"
-    ),
-    libraryDependencies ++=
-      compileDeps(
-        slf4jApi,
-        slf4jSimple,
-        catsEffect
-      ) ++ testDeps(
-        scalaTest,
-        scalaCheck
-      )
-  )
-  .dependsOn(`baas-node-interaction`)
-
 lazy val `baas-kafka-listener-example` = project
   .in(file("examples/baas-kafka-listener-example"))
   .enablePlugins(JavaAppPackaging)
@@ -480,12 +461,13 @@ lazy val `baas-kafka-listener-example` = project
   )
   .dependsOn(bakertypes, `baas-node-client`, recipeCompiler, recipeDsl)
 
-lazy val `baas-interaction-example-make-payment-and-ship-items` = project.in(file("examples/baas-interaction-examples/make-payment-and-ship-items"))
+lazy val `baas-interaction-example-reserve-items` = project.in(file("examples/baas-interaction-examples/reserve-items"))
   .enablePlugins(JavaAppPackaging)
   .enablePlugins(baas.sbt.BuildInteractionDockerImageSBTPlugin)
   .settings(commonSettings)
   .settings(
-    moduleName := "baas-interaction-example-make-payment",
+    moduleName := "baas-interaction-example-reserve-items",
+    version := "1.0.0",
     scalacOptions ++= Seq(
       "-Ypartial-unification"
     ),
@@ -497,6 +479,29 @@ lazy val `baas-interaction-example-make-payment-and-ship-items` = project.in(fil
       ) ++ testDeps(
         scalaTest,
         scalaCheck
+      )
+  )
+  .dependsOn(`baas-node-interaction`)
+
+lazy val `baas-interaction-example-make-payment-and-ship-items` = project.in(file("examples/baas-interaction-examples/make-payment-and-ship-items"))
+  .enablePlugins(JavaAppPackaging)
+  .enablePlugins(baas.sbt.BuildInteractionDockerImageSBTPlugin)
+  .settings(commonSettings)
+  .settings(
+    moduleName := "baas-interaction-example-make-payment-and-ship-items",
+    version := "1.0.0",
+    scalacOptions ++= Seq(
+      "-Ypartial-unification"
+    ),
+    libraryDependencies ++=
+      compileDeps(
+        slf4jApi,
+        slf4jSimple,
+        catsEffect
+      ) ++ testDeps(
+        scalaTest,
+        scalaCheck,
+        scalaCheckPlus
       )
   )
   .dependsOn(`baas-node-interaction`)
@@ -538,3 +543,4 @@ lazy val `sbt-baas-docker-generate` = project.in(file("sbt-baas-docker-generate"
     addSbtPlugin("org.vaslabs.kube" % "sbt-kubeyml" % "0.3.3")
   )
   .enablePlugins(SbtPlugin)
+  .enablePlugins(baas.sbt.BuildInteractionDockerImageSBTPlugin)

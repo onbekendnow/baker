@@ -4,7 +4,8 @@ import cats.effect.{IO, Resource}
 import com.ing.baker.baas.smoke
 import com.ing.baker.baas.smoke.k8s.{DefinitionFile, Pod}
 import com.ing.baker.baas.testing.BakeryFunSpec
-import org.scalatest.{ConfigMap, Matchers}
+import org.scalatest.ConfigMap
+import org.scalatest.matchers.should.Matchers
 
 import scala.sys.process._
 
@@ -51,15 +52,9 @@ class BakeryControllerSmokeTests extends BakeryFunSpec with Matchers {
         configTwo <- Pod.environmentVariable("reserve-items", namespace)("TWO")
         configThree <- Pod.environmentVariable("reserve-items", namespace)("THREE")
 
-        mountOne <- Pod.execOnNamed("reserve-items", namespace)("ls /config")
-
-        mountTwo <- Pod.execOnNamed("reserve-items", namespace)("ls /secrets")
-
         _ = configOne shouldBe ""
         _ = configTwo shouldBe ""
         _ = configThree shouldBe ""
-        _ = mountOne shouldBe List("", "")
-        _ = mountTwo shouldBe List("", "")
         _ <- printGreen("Interaction correctly configured")
 
         webshop <- DefinitionFile("baker-webshop.yaml", namespace)
