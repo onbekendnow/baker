@@ -1,0 +1,22 @@
+{{- if .Values.openshift.enabled }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: 'true'
+  labels:
+    name: client-app-service
+  name: client-app-route
+  namespace: hyperloop-tst
+spec:
+  host: {{ .Values.openshift.client-app-host }}
+  port:
+    targetPort: api
+  tls:
+    termination: edge
+  to:
+    kind: Service
+    name: client-app-service
+    weight: 100
+  wildcardPolicy:
+{{ end }}

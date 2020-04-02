@@ -1,0 +1,56 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "bakery-platform.serviceAccountName" . }}
+  labels:
+    {{- include "bakery-platform.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- end -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bakery-controller
+  labels:
+    {{- include "bakery-platform.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "bakery-platform.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "bakery-platform.selectorLabels" . | nindent 8 }}
+    spec:
+#    {{- with .Values.imagePullSecrets }}
+#      imagePullSecrets:
+#        {{- toYaml . | nindent 8 }}
+#    {{- end }}
+      #      securityContext:
+      #        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      serviceAccountName: {{ include "bakery-platform.serviceAccountName" . }}
+      containers:
+        - name: bakery-controller
+          image: "bakery-controller: {{  .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /api/v3/health
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /api/v3/health
+              port: 8080
+          resources:
+            {{- toYaml .Values.controllerResources | nindent 12 }}
+#          securityContext:
+#            {{- toYaml .Values.securityContext | nindent 12 }}
