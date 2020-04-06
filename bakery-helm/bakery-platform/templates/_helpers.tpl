@@ -51,13 +51,3 @@ app.kubernetes.io/name: {{ include "bakery-platform.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "bakery-platform.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-    {{ default (include "bakery-platform.fullname" .) .Values.serviceAccount.name }}
-{{- else -}}
-    {{ default "default" .Values.serviceAccount.name }}
-{{- end -}}
-{{- end -}}
