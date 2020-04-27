@@ -9,7 +9,7 @@ lazy val buildExampleDockerCommand: Command = Command.command("buildExampleDocke
 
       "bakery-state-node/docker:publishLocal" ::
       "bakery-client-example/docker:publishLocal" ::
-      "bakery-kafka-listener-example/docker:publishLocal" ::
+      "kafka-listener-example/docker:publishLocal" ::
       "bakery-controller/docker:publishLocal" ::
       "project bakery-interaction-make-payment-and-ship-items" ::
       "buildInteractionDockerImage --image-name=interaction-make-payment-and-ship-items --publish=local --interaction=webshop.webservice.MakePaymentInstance --interaction=webshop.webservice.ShipItemsInstance" ::
@@ -464,7 +464,7 @@ lazy val `kafka-listener-example` = project
     packageSummary in Docker := "A web-shop checkout service example running on Bakery",
     packageName in Docker := "kafka-listener-example"
   )
-  .dependsOn(`baker-types`, `baker-recipe-compiler`, `baker-recipe-dsl`)
+  .dependsOn(`baker-types`, `baker-interface`, `baker-recipe-compiler`, `baker-recipe-dsl`)
 
 lazy val `bakery-interaction-reserve-items` = project.in(file("examples/bakery-interaction-reserve-items"))
   .enablePlugins(JavaAppPackaging)
@@ -529,14 +529,14 @@ lazy val `bakery-smoke-tests` = project.in(file("bakery/bakery-smoke-tests"))
     `bakery-interaction-make-payment-and-ship-items`,
     `bakery-interaction-reserve-items`)
 
-lazy val `bakery-sbt-interaction-docker-build-plugin` = project.in(file("bakery/bakery-sbt-interaction-docker-build-plugin"))
+lazy val `bakery-sbt-interaction-docker-build-plugin` = project.in(file("sbt-interaction-docker-build-plugin"))
   .settings(defaultModuleSettings)
   .settings(noPublishSettings) // docker plugin can't be published, at least not to azure feed
   .settings(
     // workaround to let plugin be used in the same project without publishing it
     sourceGenerators in Compile += Def.task {
       val file = (sourceManaged in Compile).value / "baas" / "sbt" / "BuildInteractionDockerImageSBTPlugin.scala"
-      val sourceFile = IO.readBytes(baseDirectory.value.getParentFile / "bakery" / "project" / "BuildInteractionDockerImageSBTPlugin.scala")
+      val sourceFile = IO.readBytes(baseDirectory.value.getParentFile / "project" / "BuildInteractionDockerImageSBTPlugin.scala")
       IO.write(file, sourceFile)
       Seq(file)
     }.taskValue,
